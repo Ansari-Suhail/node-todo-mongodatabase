@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-var comp = mongoose.model('computer', {
+var computer = mongoose.model('computer', {
   name:{
     required: true,
     type: String,
@@ -19,5 +19,5 @@ var comp = mongoose.model('computer', {
 });
 
 module.exports = {
-  comp
+  computer
 }
