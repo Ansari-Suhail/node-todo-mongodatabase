@@ -3,7 +3,7 @@ const {ObjectId} = require('mongodb');
 const {mongoose} = require('./../server/db/mongoose-connection.js');
 const {computer} = require('./../server/models/computer.js');
 
-var id = '5a0bfae3070a191834719e37';
+var id = '5a0bfae3070a191834719e38';
 
 // if(!ObjectId.isValid(id)){
 //     console.log("ID not valid");

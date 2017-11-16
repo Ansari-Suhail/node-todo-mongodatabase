@@ -1,3 +1,5 @@
+const {ObjectID} = require('mongodb');
+
 var express = require('express');
 var bodyParser = require('body-parser');
 
@@ -6,6 +8,8 @@ var {Todo} = require('./models/todo.js');
 var {computer} = require('./models/computer.js');
 
 var app = express();
+
+const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
 
@@ -48,6 +52,25 @@ app.post('/computer', (req, res)=>{
     });
   });
 
-app.listen(3000, ()=>{
-  console.log('listening on port 3000');
+//passing dynamic id
+  app.get('/computer/:id', (req, res)=>{
+    var id = req.params.id;
+    // console.log("id===>>"+id);
+
+    if(!ObjectID.isValid(id)){
+      console.log(`${id} is not valid id`);
+      return res.send(`${id} is not a valid id`);
+    }
+
+    computer.findById(id).then((success)=>{
+      res.send({success});
+      console.log({success});
+    }, (err)=>{
+      res.send({err});
+      console.log({err});
+    });
+  });
+
+app.listen(port, ()=>{
+  console.log(`listening on port ${port}`);
 });
