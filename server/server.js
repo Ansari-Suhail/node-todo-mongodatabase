@@ -26,7 +26,7 @@ app.use(bodyParser.json());
 // });
 
 // post method
-app.post('/computer', (req, res)=>{
+/*app.post('/computer', (req, res)=>{
   var newComputer = new computer({
     name: req.body.name,
     email: req.body.email,
@@ -52,7 +52,7 @@ app.post('/computer', (req, res)=>{
     });
   });
 
-//passing dynamic id
+//passing dynamic id with get method
   app.get('/computer/:id', (req, res)=>{
     var id = req.params.id;
     // console.log("id===>>"+id);
@@ -68,6 +68,22 @@ app.post('/computer', (req, res)=>{
     }, (err)=>{
       res.send({err});
       console.log({err});
+    });
+  });*/
+
+//passing dynamic id with delete method
+  app.delete('/remove/:id', (req, res)=>{
+    var id = req.params.id;
+
+    if(!ObjectID.isValid(id)){
+      console.log(`${id} is not a valid id`);
+      return res.send(`${id} is not a valid id`);
+    }
+
+    computer.findByIdAndRemove(id).then((success)=>{
+      res.send({success});
+    }, (err)=>{
+      res.send({err});
     });
   });
 
