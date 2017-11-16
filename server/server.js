@@ -2,6 +2,7 @@ const {ObjectID} = require('mongodb');
 
 var express = require('express');
 var bodyParser = require('body-parser');
+var lodash = require('lodash');
 
 var {mongoose} = require('./db/mongoose-connection.js');
 var {Todo} = require('./models/todo.js');
@@ -26,12 +27,12 @@ app.use(bodyParser.json());
 // });
 
 // post method
-/*app.post('/computer', (req, res)=>{
-  var newComputer = new computer({
-    name: req.body.name,
-    email: req.body.email,
-    password: req.body.password
-  });
+  app.post('/computer', (req, res)=>{
+    var newComputer = new computer({
+      name: req.body.name,
+      email: req.body.email,
+      password: req.body.password
+    });
 
   newComputer.save().then((result)=>{
     res.send(result);
@@ -69,9 +70,9 @@ app.use(bodyParser.json());
       res.send({err});
       console.log({err});
     });
-  });*/
+  });
 
-//passing dynamic id with delete method
+//passing dynamic id and removing records with delete method
   app.delete('/remove/:id', (req, res)=>{
     var id = req.params.id;
 
@@ -81,6 +82,25 @@ app.use(bodyParser.json());
     }
 
     computer.findByIdAndRemove(id).then((success)=>{
+      res.send({success});
+    }, (err)=>{
+      res.send({err});
+    });
+  });
+
+//passing dynamic updates to computer collection with patch method
+  app.patch('/patch/:id', (req, res)=>{
+    var id = req.params.id;
+    var body = lodash.pick(req.body, ['name','email','password']);
+
+    computer.findByIdAndUpdate(id,
+      {
+        $set: body
+      },
+      {
+        new : true
+      }
+    ).then((success)=>{
       res.send({success});
     }, (err)=>{
       res.send({err});
