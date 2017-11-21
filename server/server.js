@@ -109,7 +109,7 @@ app.use(bodyParser.json());
     });
   });*/
 
-
+//==================================================================================================
 app.post('/userAuth/signup', (req, res)=>{
   var body = lodash.pick(req.body, ['email','password']);
   var newUserAuth = new UserAuth(body);
@@ -119,12 +119,12 @@ app.post('/userAuth/signup', (req, res)=>{
   }).then((token)=>{
     res.header('x-auth', token).send(newUserAuth);
   }).catch((e)=>{
-    res.status(400).send();
+    res.status(400).send("Sign Up faliled - User with this email already exists");
   });
 });
 
 
-app.get('/userAuth/me', authenticate, (req, res)=>{
+app.get('/userAuth/verify', authenticate, (req, res)=>{
   res.send(req.success);
 });
 
@@ -136,17 +136,19 @@ app.post('/userAuth/login', (req, res)=>{
       res.header('x-auth', token).send(success)
     });
   }).catch((e)=>{
-    res.status(400).send();
+    res.status(400).send("Login Failed");
   })
 });
 
-app.delete('/userAuth/deletetoken', authenticate, (req, res)=>{
+app.delete('/userAuth/verify/logout', authenticate, (req, res)=>{
   req.success.removeToken(req.token).then(()=>{
     res.status(200).send('Logout Successfully');
   },()=>{
-    res.status(400).send('failed');
-  })
-})
+    res.status(400).send('Failed to Logout');
+  });
+});
+//==================================================================================================
+
 
 
 app.listen(port, ()=>{
