@@ -3,18 +3,42 @@ const {ObjectID} = require('mongodb');
 var express = require('express');
 var bodyParser = require('body-parser');
 var lodash = require('lodash');
+var argv = require('yargs').argv;
+var request = require('request');
+const bcrypt = require('bcrypt');
+// const hashids = require('hashids');
+// const base64 = require('base-64');
 
 var {mongoose} = require('./db/mongoose-connection.js');
 var {Todo} = require('./models/todo.js');
 var {computer} = require('./models/computer.js');
 var {UserAuth} = require('./models/userAuth.js');
-var {authenticate} = require('./middleware/authenticate.js')
+var {authenticate} = require('./middleware/authenticate.js');
+
 
 var app = express();
 
 const port = process.env.PORT || 3000;
 
 app.use(bodyParser.json());
+
+/*var id = (argv.id).toString();
+bcrypt.hash(id, 10, (err, res)=>{
+  console.log('==>>',res);
+});
+
+bcrypt.compare('101', '$2a$10$jUfxRSl818KxFTVlAI89Y.AWcthT87bamtf.P8Mc19D7W1GltzEUq', (err, res)=>{
+  console.log('decoded==>>',res);
+});*/
+
+/*var hashid = new hashids();
+var id = argv.id
+var encrypt = hashid.encode(id);
+console.log('encrypted id :',encrypt);
+
+var decrypt = hashid.decode(encrypt);
+console.log('decrypted id :',decrypt);*/
+
 
 /*app.post('/todos', (req, res)=>{
   var newTodo = new Todo({
@@ -110,7 +134,13 @@ app.use(bodyParser.json());
   });*/
 
 //==================================================================================================
-app.post('/userAuth/signup', (req, res)=>{
+app.post('/userAuth/:id', (req, res)=>{
+
+  /*var id = req.params.id;
+  console.log('id==>>',id);
+  bcrypt.hash(id, 10, (err,res)=>{
+    console.log('hashed url id ',res);
+  });*/
   var body = lodash.pick(req.body, ['email','password']);
   var newUserAuth = new UserAuth(body);
 
@@ -147,9 +177,6 @@ app.delete('/userAuth/verify/logout', authenticate, (req, res)=>{
     res.status(400).send('Failed to Logout');
   });
 });
-//==================================================================================================
-
-
 
 app.listen(port, ()=>{
   console.log(`listening on port ${port}`);
